@@ -12,7 +12,11 @@ app = FastAPI(title="AI Knowledge Base Assistant")
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "*",  # Allow all origins (you can restrict this to specific domains in production)
+        "https://ai-knowledge-base-assistant.vercel.app",
+        "https://ai-knowledge-base-assistant-git-*.vercel.app",  # Preview deployments
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
