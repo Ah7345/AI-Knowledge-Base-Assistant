@@ -91,6 +91,11 @@ async def upload_file(file: UploadFile = File(...)):
         # Clean up temp file
         os.remove(file_path)
         
+        # Check if ingestion was successful
+        if not result.get("success", False):
+            error_msg = result.get("error", "Unknown error")
+            raise HTTPException(status_code=400, detail=f"Failed to process file: {error_msg}")
+        
         return {
             "message": "File processed successfully",
             "filename": file.filename,

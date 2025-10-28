@@ -24,8 +24,8 @@ class Ingestor:
             # Load document based on file type
             docs = self._load_document(file_path)
             
-            if not docs:
-                return {"success": False, "chunks": 0, "error": "No content extracted"}
+            if not docs or len(docs) == 0:
+                return {"success": False, "chunks": 0, "error": "No content extracted from document"}
             
             # Split documents into chunks
             text_splitter = self.rag_pipeline.text_splitter
@@ -51,26 +51,38 @@ class Ingestor:
         file_ext = os.path.splitext(file_path)[1].lower()
         
         try:
+            print(f"Loading document: {file_path} with extension: {file_ext}")
+            
             if file_ext == ".pdf":
                 loader = PyPDFLoader(file_path)
-                return loader.load()
+                docs = loader.load()
+                print(f"Loaded {len(docs)} pages from PDF")
+                return docs
             
             elif file_ext == ".txt":
                 loader = TextLoader(file_path, encoding="utf-8")
-                return loader.load()
+                docs = loader.load()
+                print(f"Loaded {len(docs)} documents from text file")
+                return docs
             
             elif file_ext == ".docx":
                 loader = UnstructuredWordDocumentLoader(file_path)
-                return loader.load()
+                docs = loader.load()
+                print(f"Loaded {len(docs)} elements from DOCX")
+                return docs
             
             elif file_ext in [".xlsx", ".xls"]:
                 loader = UnstructuredExcelLoader(file_path, mode="elements")
-                return loader.load()
+                docs = loader.load()
+                print(f"Loaded {len(docs)} elements from Excel")
+                return docs
             
             else:
                 raise ValueError(f"Unsupported file type: {file_ext}")
         
         except Exception as e:
             print(f"Error loading document: {e}")
+            import traceback
+            traceback.print_exc()
             raise
 
