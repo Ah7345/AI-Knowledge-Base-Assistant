@@ -1,79 +1,280 @@
 .uploader {
-  background: white;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(247, 250, 252, 0.95) 100%);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+  animation: slideDown 0.4s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .uploader h3 {
-  margin-bottom: 1rem;
-  color: #2c3e50;
-  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  font-size: 1.35rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.uploader h3 svg {
+  font-size: 1.5rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 .upload-area {
-  border: 2px dashed #bdc3c7;
-  border-radius: 8px;
-  padding: 3rem 2rem;
+  border: 3px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 3.5rem 2rem;
   text-align: center;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--transition-base);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.03) 0%, rgba(118, 75, 162, 0.03) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.upload-area .upload-icon-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 5rem;
+  opacity: 0.08;
+  transition: all var(--transition-base);
+  color: var(--primary-color);
 }
 
 .upload-area:hover {
-  border-color: #3498db;
-  background-color: #f8f9fa;
+  border-color: var(--primary-color);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+  transform: scale(1.01);
+}
+
+.upload-area:hover .upload-icon-bg {
+  transform: translate(-50%, -50%) scale(1.1);
+  opacity: 0.12;
 }
 
 .upload-area.dragging {
-  border-color: #3498db;
-  background-color: #e8f4f8;
+  border-color: var(--primary-color);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+  transform: scale(1.02);
+  box-shadow: var(--shadow-lg);
+}
+
+.upload-area.dragging .upload-icon-bg {
+  animation: bounce 0.6s ease infinite;
 }
 
 .upload-label {
   cursor: pointer;
-  color: #34495e;
-  font-size: 1rem;
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  font-weight: 500;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.upload-label svg {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  animation: swing 2s ease-in-out infinite;
+}
+
+@keyframes swing {
+  0%, 100% {
+    transform: rotate(-10deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
 }
 
 .upload-button {
-  margin-top: 1rem;
-  padding: 0.75rem 2rem;
-  background-color: #3498db;
+  margin-top: 1.25rem;
+  padding: 0.9rem 2.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   font-size: 1rem;
-  font-weight: 500;
-  transition: background-color 0.2s;
+  font-weight: 600;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.upload-button svg {
+  margin-right: 0.5rem;
+}
+
+.upload-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
 }
 
 .upload-button:hover {
-  background-color: #2980b9;
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.upload-button:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+.upload-progress {
+  margin-top: 1.25rem;
+  width: 100%;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 12px;
+  background: var(--bg-tertiary);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  animation: progressAnimation 1.5s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.4) 50%, 
+    transparent 100%);
+  animation: shimmerProgress 1s infinite;
+}
+
+@keyframes progressAnimation {
+  0% {
+    width: 0%;
+  }
+  50% {
+    width: 70%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes shimmerProgress {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 .upload-status {
-  margin-top: 0.5rem;
-  padding: 0.5rem;
-  border-radius: 4px;
-  font-size: 0.9rem;
+  margin-top: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-weight: 500;
+  animation: slideIn 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .upload-status.success {
-  color: #27ae60;
-  background-color: #d5f4e6;
+  color: var(--success-color);
+  background: linear-gradient(135deg, rgba(0, 217, 165, 0.1) 0%, rgba(79, 172, 254, 0.1) 100%);
+  border: 1px solid rgba(0, 217, 165, 0.3);
+}
+
+.upload-status.success svg {
+  font-size: 1.5rem;
+  flex-shrink: 0;
 }
 
 .upload-status.error {
-  color: #e74c3c;
-  background-color: #fadbd8;
+  color: var(--danger-color);
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(250, 112, 154, 0.1) 100%);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.upload-status.error svg {
+  font-size: 1.5rem;
+  flex-shrink: 0;
 }
 
 .upload-hint {
-  margin-top: 0.5rem;
-  font-size: 0.85rem;
-  color: #7f8c8d;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: var(--text-tertiary);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.upload-hint svg {
+  font-size: 1.1rem;
 }
 

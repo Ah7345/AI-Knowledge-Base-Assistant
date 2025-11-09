@@ -1,4 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { HiUser } from 'react-icons/hi2'
+import { HiSparkles } from 'react-icons/hi2'
+import { HiPaperClip } from 'react-icons/hi2'
+import { HiPaperAirplane } from 'react-icons/hi2'
 import { askQuestion } from '../api'
 import './Chat.css'
 
@@ -6,11 +10,20 @@ function Chat() {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: 'Hello! I am your AI Knowledge Base Assistant. Upload documents and ask me questions about them.',
+      content: 'Hello! I\'m your AI Knowledge Base Assistant. I can help you understand your documents by answering questions about them. Start by uploading some documents, then ask me anything!',
     },
   ])
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const messagesEndRef = useRef(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
 
   const handleSend = async () => {
     if (!inputValue.trim() || isLoading) return
@@ -58,11 +71,17 @@ function Chat() {
       <div className="chat-messages">
         {messages.map((message, index) => (
           <div key={index} className={`message message-${message.role}`}>
+            <div className="message-avatar">
+              {message.role === 'user' ? <HiUser /> : <HiSparkles />}
+            </div>
             <div className="message-content">
               {message.content}
               {message.sources && message.sources.length > 0 && (
                 <div className="message-sources">
-                  <strong>Sources:</strong>{' '}
+                  <strong>
+                    <HiPaperClip />
+                    Sources:
+                  </strong>
                   {message.sources.map((source, i) => (
                     <span key={i} className="source-tag">
                       {source}
@@ -75,6 +94,9 @@ function Chat() {
         ))}
         {isLoading && (
           <div className="message message-assistant">
+            <div className="message-avatar">
+              <HiSparkles />
+            </div>
             <div className="message-content typing-indicator">
               <span></span>
               <span></span>
@@ -82,6 +104,7 @@ function Chat() {
             </div>
           </div>
         )}
+        <div ref={messagesEndRef} />
       </div>
       <div className="chat-input-container">
         <textarea
@@ -89,7 +112,7 @@ function Chat() {
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyPress={handleKeyPress}
-          placeholder="Ask a question about your documents..."
+          placeholder="Ask a question about your documents... (Press Enter to send)"
           disabled={isLoading}
           rows={3}
         />
@@ -98,6 +121,7 @@ function Chat() {
           onClick={handleSend}
           disabled={!inputValue.trim() || isLoading}
         >
+          <HiPaperAirplane />
           Send
         </button>
       </div>

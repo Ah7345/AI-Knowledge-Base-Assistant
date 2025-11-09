@@ -1,12 +1,20 @@
 import { useState, useEffect } from 'react'
+import { HiSparkles } from 'react-icons/hi2'
+import { FaFolderOpen } from 'react-icons/fa'
+import { HiDocumentText } from 'react-icons/hi2'
+import { HiInboxArrowDown } from 'react-icons/hi2'
 import Chat from './components/Chat'
 import Uploader from './components/Uploader'
+import Welcome from './components/Welcome'
+import Toast from './components/Toast'
+import Footer from './components/Footer'
 import { getDocuments, clearDocuments } from './api'
 import './App.css'
 
 function App() {
   const [documents, setDocuments] = useState([])
   const [showUploader, setShowUploader] = useState(false)
+  const [toast, setToast] = useState(null)
 
   useEffect(() => {
     loadDocuments()
@@ -31,9 +39,9 @@ function App() {
       try {
         await clearDocuments()
         setDocuments([])
-        alert('All documents cleared successfully')
+        setToast({ message: 'All documents cleared successfully', type: 'success' })
       } catch (error) {
-        alert('Error clearing documents')
+        setToast({ message: 'Error clearing documents', type: 'error' })
       }
     }
   }
@@ -41,7 +49,10 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>AI Knowledge Base Assistant</h1>
+        <h1>
+          <HiSparkles />
+          AI Knowledge Base Assistant
+        </h1>
         <div className="header-actions">
           <button onClick={() => setShowUploader(!showUploader)} className="btn-secondary">
             {showUploader ? 'Hide' : 'Upload Documents'}
@@ -62,13 +73,22 @@ function App() {
         <div className="main-content">
           <div className="sidebar">
             <div className="document-list">
-              <h3>Documents ({documents.length})</h3>
+              <h3>
+                <FaFolderOpen />
+                Documents ({documents.length})
+              </h3>
               {documents.length === 0 ? (
-                <p className="empty-state">No documents uploaded yet</p>
+                <p className="empty-state">
+                  <HiInboxArrowDown />
+                  No documents uploaded yet
+                </p>
               ) : (
                 <ul>
                   {documents.map((doc, index) => (
-                    <li key={index}>{doc}</li>
+                    <li key={index}>
+                      <HiDocumentText />
+                      {doc}
+                    </li>
                   ))}
                 </ul>
               )}
@@ -76,10 +96,20 @@ function App() {
           </div>
 
           <div className="chat-container">
-            <Chat />
+            {documents.length === 0 ? <Welcome /> : <Chat />}
           </div>
         </div>
       </div>
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+
+      <Footer />
     </div>
   )
 }
